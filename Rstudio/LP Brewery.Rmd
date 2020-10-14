@@ -1,0 +1,86 @@
+---
+title: "LP Brewery"
+output: html_document
+---
+```{r}
+odlest<-c(1,2,0)
+total<-c(480,800,1190)
+profitwithout_new<-data.frame(odlest,total)
+plot(profitwithout_new)
+
+```
+
+
+before we add a new drink ..
+
+
+
+```{r Datainfo ,  echo=FALSE}
+Names <- c("Drink 1 ", "drink 2", "Barrel-Aged Dantzig")
+price <- c(13,23,30)
+Datainfo <- data.frame(Names, price)
+ 
+Datainfo
+```
+
+initially, these are the drink that we Have and there price ..
+
+
+```{r ,  echo=FALSE}
+matrial<- matrix(c(5,15,10,
+                  4,4,4,
+                  35,20,5),, nrow = 3, byrow = TRUE)
+
+matrial
+```
+
+
+
+```{r}
+f.rhs <- c(480,
+           800,
+           1190)
+library(lpSolve)
+sol<-lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens = TRUE)
+sol$objval #the maximum value 
+sol$solution 
+sol$duals 
+```
+
+
+
+```{r}
+CorHatMalt<- c(3,0,0)
+amount<- c(480,800,1190)
+
+profit<-data.frame(CorHatMalt,amount)
+profit
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r , echo=FALSE}
+plot(profit)
+```
+
+As we see above the corns has the most effect in the profit "3.0"
+
+I think the profit is after we add a new drink is more better, based on Duals result ..
+
+
+```{r}
+library(broom)
+
+lm_test <- lm(CorHatMalt ~ amount)            
+summary(lm_test)                # Obtaining linear model summary statistics
+
+table_obj <- tidy(lm_test)      # Using tidy() to create a new R object called table 
+pander(table_obj, digits = 3) 
+```
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(message=FALSE, 
+tidy.opts=list(width.cutoff=60))
+```
